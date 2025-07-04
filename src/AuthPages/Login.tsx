@@ -24,16 +24,16 @@ export const Login = () => {
                 console.log('User from API:', user);
                 switch (user.role) {
                     case 'admin':
-                        navigate('/admin/dashboard');
+                        navigate('/admin/users');
                         break;
                     case 'educator':
-                        navigate('/educator/dashboard');
+                        navigate('/educator/profile');
                         break;
                     case 'student':
-                        navigate('/student/dashboard');
+                        navigate('/student/profile');
                         break;
                     default:
-                        navigate('/'); // fallback or 404
+                        navigate('/login'); // fallback or 404
                 }
             })
             .catch(() => {

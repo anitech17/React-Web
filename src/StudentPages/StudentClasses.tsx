@@ -1,9 +1,9 @@
 import { Box } from "@mui/material"
 
-export const AdminDashboard = () => {
+export const StudentClasses = () => {
     return (
         <Box>
-            Admin Dashboard
+            Student Classes
         </Box>
     )
 }

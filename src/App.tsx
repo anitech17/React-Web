@@ -5,6 +5,8 @@ import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { Login, Unauthorized } from "./AuthPages";
 import { AdminRouter, EducatorRouter, StudentRouter } from "./Routes";
 import RequireAuth from "./Routes/RequireAuth";
+import { PublicHeader } from './Components';
+import { AboutUs, Blogs, ContactUs, Courses, Home, Testimonials } from './PublicPages';
 
 function AppContent() {
   const dispatch = useAppDispatch();
@@ -22,16 +24,16 @@ function AppContent() {
 
   // 🚀 Redirect based on role after authentication
   useEffect(() => {
-    if (isAuthenticated && location.pathname === '/') {
+    if (isAuthenticated && location.pathname === '/login') {
       switch (user?.role) {
         case 'admin':
-          navigate('/admin/dashboard');
+          navigate('/admin/users');
           break;
         case 'educator':
-          navigate('/educator/dashboard');
+          navigate('/educator/profile');
           break;
         case 'student':
-          navigate('/student/dashboard');
+          navigate('/student/profile');
           break;
         default:
           navigate('/unauthorized');
@@ -45,19 +47,28 @@ function AppContent() {
   }
 
   return (
-    <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="/unauthorized" element={<Unauthorized />} />
-      <Route element={<RequireAuth allowedRoles={['admin']} />}>
-        <Route path="/admin/*" element={<AdminRouter />} />
-      </Route>
-      <Route element={<RequireAuth allowedRoles={['educator']} />}>
-        <Route path="/educator/*" element={<EducatorRouter />} />
-      </Route>
-      <Route element={<RequireAuth allowedRoles={['student']} />}>
-        <Route path="/student/*" element={<StudentRouter />} />
-      </Route>
-    </Routes>
+    <>
+      <PublicHeader />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about-us" element={<AboutUs />} />
+        <Route path="/courses" element={<Courses />} />
+        <Route path="/testimonials" element={<Testimonials />} />
+        <Route path="/blogs" element={<Blogs />} />
+        <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route element={<RequireAuth allowedRoles={['admin']} />}>
+          <Route path="/admin/*" element={<AdminRouter />} />
+        </Route>
+        <Route element={<RequireAuth allowedRoles={['educator']} />}>
+          <Route path="/educator/*" element={<EducatorRouter />} />
+        </Route>
+        <Route element={<RequireAuth allowedRoles={['student']} />}>
+          <Route path="/student/*" element={<StudentRouter />} />
+        </Route>
+      </Routes>
+    </>
   );
 }
 

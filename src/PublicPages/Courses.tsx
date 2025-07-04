@@ -1,9 +1,9 @@
 import { Box } from "@mui/material"
 
-export const StudentDashboard = () => {
+export const Courses = () =>{
     return (
         <Box>
-            Student Dashboard
+            Courses
         </Box>
     )
 }
