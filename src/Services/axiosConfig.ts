@@ -1,25 +1,3 @@
-// // src/api/axios.ts
-// import axios from 'axios';
-
-// const axiosInstance = axios.create({
-//   baseURL: 'http://localhost:4000/api/studies', // centralized base
-//   headers: {
-//     'Content-Type': 'application/json',
-//   },
-//   withCredentials: true, // if using cookies for auth
-// });
-
-// // Optional: Interceptors
-// axiosInstance.interceptors.response.use(
-//   (response) => response,
-//   (error) => {
-//     // Log error globally or show toast
-//     return Promise.reject(error);
-//   }
-// );
-
-// export default axiosInstance;
-// src/Services/axiosConfig.ts
 import axios from 'axios';
 
 const axiosInstance = axios.create({

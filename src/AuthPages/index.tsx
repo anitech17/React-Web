@@ -1,3 +1,2 @@
-export * from "./Login"
-export * from "./Dashboard"
-export * from "./Unauthorised"
+export * from "./Login";
+export * from "./Unauthorised";
