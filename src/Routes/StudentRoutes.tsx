@@ -1,7 +1,7 @@
 import { Box } from "@mui/material"
 import { Route, Routes } from "react-router-dom"
 import { StudentSidebar } from "../Components"
-import { StudentClasses, StudentProfile, StudentProgress, StudentTests } from "../StudentPages"
+import { StudentClasses, StudentProfile, StudentProgress, StudentTests } from "../Pages"
 
 export const StudentRouter = () => {
     return (

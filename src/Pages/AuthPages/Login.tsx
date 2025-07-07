@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../hooks/useTypedHooks';
-import { loginUser } from '../features/auth/authThunks';
-import type { RootState } from '../app/store';
+import { useAppDispatch, useAppSelector } from '../../hooks/useTypedHooks';
+import { loginUser } from '../../features/auth/authThunks';
+import type { RootState } from '../../app/store';
 
 export const Login = () => {
     const [email, setEmail] = useState('');

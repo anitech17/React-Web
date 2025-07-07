@@ -1,7 +1,7 @@
 import { Box } from "@mui/material"
 import { Route, Routes } from "react-router-dom"
 import { EducatorSidebar } from "../Components"
-import { EducatorClasses, EducatorProfile, EducatorStudents, EducatorTests } from "../EducatorPages"
+import { EducatorClasses, EducatorProfile, EducatorStudents, EducatorTests } from "../Pages"
 
 export const EducatorRouter = () => {
     return (

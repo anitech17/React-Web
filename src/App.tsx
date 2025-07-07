@@ -2,11 +2,11 @@ import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from './hooks/useTypedHooks';
 import { getCurrentUser } from './features/auth/authThunks';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
-import { Login, Unauthorized } from "./AuthPages";
+import { Login, Unauthorized } from "./Pages";
 import { AdminRouter, EducatorRouter, StudentRouter } from "./Routes";
 import RequireAuth from "./Routes/RequireAuth";
 import { PublicHeader } from './Components';
-import { AboutUs, Blogs, ContactUs, Courses, Home, Testimonials } from './PublicPages';
+import { AboutUs, Blogs, ContactUs, Courses, Home, Testimonials } from './Pages';
 
 function AppContent() {
   const dispatch = useAppDispatch();

@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../hooks/useTypedHooks';
-import { logout } from '../features/auth/authSlice';
+import { useAppDispatch } from '../../hooks/useTypedHooks';
+import { logout } from '../../features/auth/authSlice';
 
 export const Unauthorized = () => {
   const dispatch = useAppDispatch();

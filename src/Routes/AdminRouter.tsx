@@ -1,7 +1,7 @@
 import { Box } from "@mui/material"
 import { Route, Routes } from "react-router-dom"
 import { AdminSidebar } from "../Components"
-import { AdminClasses, AdminReports, AdminTests, AdminUsers } from "../AdminPages"
+import { AdminClasses, AdminReports, AdminTests, AdminUsers } from "../Pages"
 
 export const AdminRouter = () => {
     return (
