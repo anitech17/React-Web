@@ -14,6 +14,13 @@ export interface UsersTableProps {
   users: User[];
   onEdit: (user: User) => void;
   onDelete: (id: string) => void;
+  onRoleFilterChange?: (role: string) => void;
+  onSearchChange?: (search: string) => void;
+  onPageChange?: (page: number) => void;
+  onLimitChange?: (limit: number) => void;
+  page: number;
+  limit: number;
+  total: number;
 }
 
 interface FormData {
