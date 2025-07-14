@@ -1,6 +1,6 @@
 // src/features/admin/users/usersSlice.ts
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchUsers } from "../thunks";
+import { createUser, editUser, fetchUsers } from "../thunks";
 import type { User } from "../../../Pages/AdminPages/Components/types";
 
 interface UsersState {
@@ -41,6 +41,34 @@ const usersSlice = createSlice({
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message ?? "Failed to fetch users";
+      })
+      .addCase(createUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(createUser.fulfilled, (state, action) => {
+        state.users.unshift(action.payload); // optionally add new user to the list
+        state.loading = false;
+      })
+      .addCase(createUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to create user";
+      })
+      .addCase(editUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(editUser.fulfilled, (state, action) => {
+        const updatedUser = action.payload;
+        const index = state.users.findIndex((u) => u.id === updatedUser.id);
+        if (index !== -1) {
+          state.users[index] = updatedUser; // Optimistic UI update
+        }
+        state.loading = false;
+      })
+      .addCase(editUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to update user";
       });
   },
 });

@@ -23,11 +23,12 @@ export interface UsersTableProps {
   total: number;
 }
 
-interface FormData {
+export interface CreateAndEditUserPayload {
   name: string;
   email: string;
-  phone: string;
+  password?: string;
   dob: string;
+  phone: string;
   role: Role;
 }
 
@@ -36,6 +37,6 @@ export interface DialogBoxProps {
   onClose: () => void;
   onSubmit: () => void;
   isEditing: boolean;
-  form: FormData;
-  setForm: (form: FormData) => void;
+  form: CreateAndEditUserPayload;
+  setForm: (form: CreateAndEditUserPayload) => void;
 }

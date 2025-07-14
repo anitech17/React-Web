@@ -8,6 +8,7 @@ import {
   MenuItem,
   Button,
   Box,
+  Typography,
 } from "@mui/material";
 import type { DialogBoxProps, Role } from "../types";
 
@@ -30,6 +31,15 @@ export const UserDialog: React.FC<DialogBoxProps> = ({ open, onClose, onSubmit, 
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             fullWidth
           />
+          {!isEditing && (
+            <TextField
+              label="Password"
+              type="password"
+              value={(form as any).password || ""}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+              fullWidth
+            />
+          )}
           <TextField
             label="Phone"
             value={form.phone}
@@ -48,11 +58,17 @@ export const UserDialog: React.FC<DialogBoxProps> = ({ open, onClose, onSubmit, 
             value={form.role}
             onChange={(e) => setForm({ ...form, role: e.target.value as Role })}
             fullWidth
+            disabled={isEditing}
           >
             <MenuItem value="admin">Admin</MenuItem>
             <MenuItem value="educator">Educator</MenuItem>
             <MenuItem value="student">Student</MenuItem>
           </Select>
+          {isEditing && (
+            <Typography variant="caption" color="textSecondary" mt={0.5}>
+              Role cannot be changed during edit
+            </Typography>
+          )}
         </Box>
       </DialogContent>
       <DialogActions>

@@ -1,7 +1,7 @@
 // src/features/admin/users/usersThunks.ts
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../../../Services/axiosConfig";
-import type { User } from "../../../Pages/AdminPages/Components/types";
+import type { CreateAndEditUserPayload, User } from "../../../Pages/AdminPages/Components/types";
 
 interface FetchUsersParams {
   role?: string;
@@ -22,3 +22,30 @@ export const fetchUsers = createAsyncThunk<
 
   return response.data;
 });
+
+export const createUser = createAsyncThunk<
+  User,
+  CreateAndEditUserPayload,
+  { rejectValue: string }
+>("admin/users/createUser", async (userData, { rejectWithValue }) => {
+  try {
+    const response = await axios.post("/admin/user", userData);
+    return response.data.user;
+  } catch (err: any) {
+    return rejectWithValue(err.response?.data?.message || "Failed to create user");
+  }
+});
+
+export const editUser = createAsyncThunk<
+  User,
+  { id: string; data: Partial<User> },
+  { rejectValue: string }
+>("admin/users/editUser", async ({ id, data }, { rejectWithValue }) => {
+  try {
+    const response = await axios.put(`/admin/user/${id}`, data);
+    return response.data.user;
+  } catch (err: any) {
+    return rejectWithValue(err.response?.data?.message || "Failed to update user");
+  }
+});
+

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { useAppDispatch, useAppSelector } from "../../hooks/useTypedHooks";
-import { fetchUsers } from "../../features/admin/thunks";
+import { createUser, editUser, fetchUsers } from "../../features/admin/thunks";
 import { UserDialog, UsersTable } from "./Components";
 import type { User } from "./Components/types";
 import { Spinner } from "../../Components";
@@ -42,11 +42,28 @@ export const AdminUsers = () => {
 
     const handleSaveUser = () => {
         if (editingUser) {
-            // implement edit API call here
+            const { role, ...dataWithoutRole } = form; // 👈 remove `role` from form
+            dispatch(editUser({ id: editingUser.id, data: dataWithoutRole }))
+                .unwrap()
+                .then(() => {
+                    setOpenDialog(false);
+                    dispatch(fetchUsers({ search, role: roleFilter, page: pageParam, limit: limitParam }));
+                })
+                .catch((err) => {
+                    console.error("Failed to update user:", err);
+                });
         } else {
-            // implement create API call here
+            dispatch(createUser(form))
+                .unwrap()
+                .then(() => {
+                    setOpenDialog(false); // close dialog
+                    dispatch(fetchUsers({ search, role: roleFilter, page: pageParam, limit: limitParam })); // refetch updated list
+                })
+                .catch((err) => {
+                    console.error("Failed to create user:", err);
+                    // Optionally show error message via toast/snackbar
+                });
         }
-        setOpenDialog(false);
     };
 
     const handleEdit = (user: User) => {
