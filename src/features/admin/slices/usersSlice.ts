@@ -1,6 +1,6 @@
 // src/features/admin/users/usersSlice.ts
 import { createSlice } from "@reduxjs/toolkit";
-import { createUser, editUser, fetchUsers } from "../thunks";
+import { createUser, deleteUser, editUser, fetchUsers } from "../thunks";
 import type { User } from "../../../Pages/AdminPages/Components/types";
 
 interface UsersState {
@@ -69,6 +69,18 @@ const usersSlice = createSlice({
       .addCase(editUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to update user";
+      })
+      .addCase(deleteUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.users = state.users.filter((user) => user.id !== action.payload);
+        state.loading = false;
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to delete user";
       });
   },
 });

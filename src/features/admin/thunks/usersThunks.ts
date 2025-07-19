@@ -49,3 +49,17 @@ export const editUser = createAsyncThunk<
   }
 });
 
+export const deleteUser = createAsyncThunk<
+  string, // return type (userId)
+  string, // input (userId)
+  { rejectValue: string }
+>("admin/users/deleteUser", async (id, { rejectWithValue }) => {
+  try {
+    await axios.delete(`/admin/user/${id}`);
+    return id; // return the deleted user's id
+  } catch (err: any) {
+    return rejectWithValue(err.response?.data?.message || "Failed to delete user");
+  }
+});
+
+
