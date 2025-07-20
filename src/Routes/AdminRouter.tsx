@@ -1,7 +1,7 @@
 import { Box } from "@mui/material"
 import { Route, Routes } from "react-router-dom"
 import { AdminSidebar } from "../Components"
-import { AdminClasses, AdminReports, AdminTests, AdminUsers } from "../Pages"
+import { AdminClasses, AdminCourses, AdminReports, AdminTests, AdminUsers } from "../Pages"
 
 export const AdminRouter = () => {
     return (
@@ -10,8 +10,9 @@ export const AdminRouter = () => {
             <Routes>
                 <Route path="/users" element={< AdminUsers />} />
                 <Route path="/reports" element={< AdminReports />} />
-                <Route path="/Classes" element={< AdminClasses />} />
-                <Route path="/Tests" element={< AdminTests />} />
+                <Route path="/classes" element={< AdminClasses />} />
+                <Route path="/tests" element={< AdminTests />} />
+                <Route path="/courses" element={< AdminCourses />} />
             </Routes>
         </Box>
     )

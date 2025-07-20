@@ -78,6 +78,13 @@ export const AdminSidebar = () => {
             </ListItemIcon>
             <ListItemText primary="Tests" />
           </ListItemButton>
+
+          <ListItemButton onClick={() => navigate("/admin/courses")}>
+            <ListItemIcon>
+              <AssignmentIcon />
+            </ListItemIcon>
+            <ListItemText primary="Courses" />
+          </ListItemButton>
         </List>
       </Box>
 
