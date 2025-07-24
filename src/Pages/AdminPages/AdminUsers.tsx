@@ -24,6 +24,9 @@ export const AdminUsers = () => {
 
   const [pageParam, setPageParam] = useState(page);
   const [limitParam, setLimitParam] = useState(limit);
+  const [search, setSearch] = useState("");
+  const [roleFilter, setRoleFilter] = useState("");
+  
   const [form, setForm] = useState<Omit<User, "id" | "created_at">>({
     name: "",
     email: "",
@@ -31,9 +34,6 @@ export const AdminUsers = () => {
     dob: "",
     role: "student",
   });
-
-  const [search, setSearch] = useState("");
-  const [roleFilter, setRoleFilter] = useState("");
 
   useEffect(() => {
     dispatch(fetchUsers({ search, role: roleFilter, page: pageParam, limit: limitParam }));
