@@ -40,3 +40,37 @@ export interface DialogBoxProps {
   form: CreateAndEditUserPayload;
   setForm: (form: CreateAndEditUserPayload) => void;
 }
+
+export interface SyllabusSection {
+  id: string;
+  course_id: string;
+  title: string;
+  description: string;
+  order: number;
+}
+
+export interface Course {
+  id: string;
+  title: string;
+  subject: string;
+  description: string;
+  class: string;
+}
+
+export interface CourseWithSyllabus extends Course {
+  syllabusSections: SyllabusSection[];
+}
+
+export interface SyllabusSectionInput {
+  title: string;
+  description: string;
+  order: number;
+}
+
+export interface CreateAndEditCoursePayload {
+  title: string;
+  subject: string;
+  description: string;
+  class: string;
+  syllabusSections: SyllabusSectionInput[];
+}
