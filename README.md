@@ -1,8 +1,4 @@
-Sure! Here's your fully updated `README.md` file in clean markdown format, ready to be saved directly:
 
----
-
-```markdown
 # Online Learning Platform – Frontend
 
 A scalable and modular **frontend application** for an **online learning platform**, developed using **React**, **TypeScript**, **Vite**, and **Redux Toolkit**. The application supports **three distinct user roles**: **Admin**, **Educator**, and **Student**, each with its own dedicated dashboard and feature set.
@@ -85,41 +81,150 @@ A scalable and modular **frontend application** for an **online learning platfor
 ├── src
 │   ├── app
 │   │   └── store.ts
+│   ├── App.css
+│   ├── App.tsx
 │   ├── assets
+│   │   └── react.svg
 │   ├── Components
 │   │   ├── AdminSidebar.tsx
 │   │   ├── CustomSnackbar.tsx
 │   │   ├── EducatorSidebar.tsx
+│   │   ├── index.tsx
 │   │   ├── PublicHeader.tsx
 │   │   ├── Spinner.tsx
 │   │   ├── StudentSidebar.tsx
-│   │   └── WarningsDialog/DeleteConfirmDialog.tsx
+│   │   └── WarningsDialog
+│   │       └── DeleteConfirmDialog.tsx
 │   ├── features
 │   │   ├── admin
 │   │   │   ├── slices
 │   │   │   │   ├── classesSlice.ts
 │   │   │   │   ├── coursesSlice.ts
+│   │   │   │   ├── index.ts
 │   │   │   │   ├── reportsSlice.ts
-│   │   │   │   ├── usersSlice.ts
-│   │   │   │   └── sliceHandlers
+│   │   │   │   ├── sliceHandlers
+│   │   │   │   │   ├── coursesSliceHandlers.ts
+│   │   │   │   │   ├── index.ts
+│   │   │   │   │   └── usersSliceHandlers.ts
+│   │   │   │   └── usersSlice.ts
 │   │   │   └── thunks
+│   │   │       ├── classesThunks.ts
+│   │   │       ├── coursesThunks.ts
+│   │   │       ├── index.ts
+│   │   │       ├── reportsThunks.ts
+│   │   │       └── usersThunks.ts
 │   │   └── auth
-│   ├── hooks/useTypedHooks.ts
+│   │       ├── authSlice.ts
+│   │       └── authThunks.ts
+│   ├── hooks
+│   │   └── useTypedHooks.ts
+│   ├── index.css
+│   ├── main.tsx
 │   ├── Pages
 │   │   ├── AdminPages
+│   │   │   ├── AdminClasses.tsx
+│   │   │   ├── AdminCourses.tsx
+│   │   │   ├── AdminReports.tsx
+│   │   │   ├── AdminTests.tsx
+│   │   │   ├── AdminUsers.tsx
+│   │   │   ├── Components
+│   │   │   │   ├── Classes
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── Courses
+│   │   │   │   │   ├── CoursesTable.tsx
+│   │   │   │   │   ├── CreateNewCourseDialog.tsx
+│   │   │   │   │   ├── EditCourseDialog.tsx
+│   │   │   │   │   ├── index.tsx
+│   │   │   │   │   └── SyllabusDetailsDialog.tsx
+│   │   │   │   ├── index.tsx
+│   │   │   │   ├── Reports
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── Tests
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── types.ts
+│   │   │   │   └── Users
+│   │   │   │       ├── index.tsx
+│   │   │   │       ├── UserDialog.tsx
+│   │   │   │       └── UsersTable.tsx
+│   │   │   └── index.tsx
 │   │   ├── AuthPages
+│   │   │   ├── index.tsx
+│   │   │   ├── Login.tsx
+│   │   │   └── Unauthorised.tsx
 │   │   ├── EducatorPages
+│   │   │   ├── Components
+│   │   │   │   ├── Classes
+│   │   │   │   │   ├── CompletedClasses.tsx
+│   │   │   │   │   ├── index.ts
+│   │   │   │   │   ├── ScheduleClassDialog.tsx
+│   │   │   │   │   └── ScheduledClasses.tsx
+│   │   │   │   ├── index.tsx
+│   │   │   │   ├── Profile
+│   │   │   │   │   ├── ClassScheduling.tsx
+│   │   │   │   │   ├── index.ts
+│   │   │   │   │   ├── PersonalDetails.tsx
+│   │   │   │   │   ├── StudentManagement.tsx
+│   │   │   │   │   └── TestManagement.tsx
+│   │   │   │   ├── Students
+│   │   │   │   │   ├── index.ts
+│   │   │   │   │   ├── StudentDialog.tsx
+│   │   │   │   │   └── StudentTable.tsx
+│   │   │   │   └── Tests
+│   │   │   │       └── index.ts
+│   │   │   ├── EducatorClasses.tsx
+│   │   │   ├── EducatorProfile.tsx
+│   │   │   ├── EducatorStudents.tsx
+│   │   │   ├── EducatorTests.tsx
+│   │   │   └── index.tsx
+│   │   ├── index.tsx
 │   │   ├── PublicPages
+│   │   │   ├── AboutUs.tsx
+│   │   │   ├── Blogs.tsx
+│   │   │   ├── ContactUs.tsx
+│   │   │   ├── Courses.tsx
+│   │   │   ├── Home.tsx
+│   │   │   ├── index.tsx
+│   │   │   └── Testimonials.tsx
 │   │   └── StudentPages
+│   │       ├── Components
+│   │       │   ├── Classes
+│   │       │   │   ├── CommentDialog.tsx
+│   │       │   │   ├── CompletedClasses.tsx
+│   │       │   │   ├── index.tsx
+│   │       │   │   ├── RequestClassDialog.tsx
+│   │       │   │   └── ScheduledClasses.tsx
+│   │       │   ├── index.tsx
+│   │       │   ├── Profile
+│   │       │   │   ├── index.tsx
+│   │       │   │   ├── LastTestResult.tsx
+│   │       │   │   ├── NextClassScheduled.tsx
+│   │       │   │   ├── NextTestScheduled.tsx
+│   │       │   │   ├── PersonalDetails.tsx
+│   │       │   │   └── ProgressReportSummary.tsx
+│   │       │   ├── Progress
+│   │       │   │   ├── index.tsx
+│   │       │   │   ├── PerformanceInsights.tsx
+│   │       │   │   ├── ProgressSummary.tsx
+│   │       │   │   ├── SubjectProgress.tsx
+│   │       │   │   └── TestPerformance.tsx
+│   │       │   └── Tests
+│   │       │       ├── ComingTests.tsx
+│   │       │       ├── CompletedTests.tsx
+│   │       │       ├── index.tsx
+│   │       │       └── TestDetailsDialog.tsx
+│   │       ├── index.tsx
+│   │       ├── StudentClasses.tsx
+│   │       ├── StudentProfile.tsx
+│   │       ├── StudentProgress.tsx
+│   │       └── StudentTests.tsx
 │   ├── Routes
 │   │   ├── AdminRouter.tsx
 │   │   ├── EducatorRouter.tsx
-│   │   ├── StudentRoutes.tsx
+│   │   ├── index.tsx
 │   │   ├── RequireAuth.tsx
-│   ├── Services/axiosConfig.ts
-│   ├── App.tsx
-│   ├── main.tsx
-│   ├── index.css
+│   │   └── StudentRoutes.tsx
+│   ├── Services
+│   │   └── axiosConfig.ts
 │   └── vite-env.d.ts
 ├── tsconfig.app.json
 ├── tsconfig.json
@@ -202,27 +307,5 @@ export default tseslint.config([
     },
   },
 ])
-```
 
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Planned areas for contribution include:
-
-* WebSocket Chat System
-* Notification Center UI
-* Testing and Performance Improvements
-
----
-
-## 📜 License
-
-This project is licensed under the **MIT License**.
-
-```
-
----
-
-Let me know if you'd like a `.env.example`, `CONTRIBUTING.md`, or a deployment section for production (e.g. Vercel, Netlify, or Docker).
 ```
