@@ -1,4 +1,4 @@
-export * from "./ClassScheduling";
+export * from "./NextClassScheduled";
 export * from "./PersonalDetails";
 export * from "./StudentManagement";
-export * from "./TestManagement";
+export * from "./NextTestScheduled";
