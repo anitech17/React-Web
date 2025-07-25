@@ -1,4 +1,4 @@
-// pages/index.tsx
+// --- pages/index.tsx ---
 import {
   Box,
   Grid,
@@ -10,48 +10,76 @@ import {
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import { useNavigate } from "react-router-dom";
 import {
-  ClassScheduling,
+  NextClassScheduled,
   PersonalDetails,
   StudentManagement,
-  TestManagement,
+  NextTestScheduled,
 } from "./Components";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../../app/store";
+import { fetchEducatorDashboard } from "../../features/educator/thunks";
+import { Spinner } from "../../Components";
 
 export const EducatorProfile = () => {
   const navigate = useNavigate();
-  const hasNewMessage = true; // You can hook this to Redux or socket later
+  const dispatch = useDispatch<AppDispatch>();
+
+  const {
+    data: educatorData,
+    loading,
+    error,
+  } = useSelector((state: RootState) => state.educator.educatorDashboard);
+
+  const { user } = useSelector((state: RootState) => state.auth);
+
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(fetchEducatorDashboard(user.id));
+    }
+  }, [dispatch, user]);
 
   return (
     <Box width="100%" sx={{ p: 3 }}>
+      {loading && <Spinner />}
+
       {/* Header with Notifications */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h5" fontWeight={600}>
           Educator Dashboard
         </Typography>
         <IconButton color="primary" onClick={() => navigate("/chat")}>
-          <Badge badgeContent={hasNewMessage ? 1 : 0} color="error">
+          <Badge badgeContent={1} color="error">
             <NotificationsActiveIcon />
           </Badge>
         </IconButton>
       </Box>
 
-      {/* Personal Info Section */}
-      <PersonalDetails />
-      <Divider sx={{ my: 4 }} />
+      {error && <Typography color="error">{error}</Typography>}
+      {!educatorData ? (
+        <Typography>No educator data found.</Typography>
+      ) : (
+        <>
+          {/* Personal Info Section */}
+          <PersonalDetails data={educatorData} />
+          <Divider sx={{ my: 4 }} />
 
-      {/* Dashboard Components Grid */}
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 6, sm: 4 }} component="div">
-          <StudentManagement />
-        </Grid>
+          {/* Dashboard Components Grid */}
+          <Grid container spacing={3}>
+            <Grid size={{ xs: 12, md: 6, sm: 4 }} component="div">
+              <StudentManagement />
+            </Grid>
 
-        <Grid size={{ xs: 12, md: 6, sm: 4 }} component="div">
-          <TestManagement />
-        </Grid>
+            <Grid size={{ xs: 12, md: 6, sm: 4 }} component="div">
+              <NextTestScheduled data={educatorData.nextTest} />
+            </Grid>
 
-        <Grid size={{ xs: 12, md: 6, sm: 4 }} component="div">
-          <ClassScheduling />
-        </Grid>
-      </Grid>
+            <Grid size={{ xs: 12, md: 6, sm: 4 }} component="div">
+              <NextClassScheduled data={educatorData.nextScheduledClass} />
+            </Grid>
+          </Grid>
+        </>
+      )}
     </Box>
   );
 };
