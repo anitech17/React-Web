@@ -2,14 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import authReducer from '../features/auth/authSlice';
 import adminReducer from '../features/admin/slices';
 // import educatorReducer from '../features/educator/educatorSlice';
-// import studentReducer from '../features/student/studentSlice';
+import studentReducer from '../features/student/slices';
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     admin: adminReducer,
+    student: studentReducer,
     // educator: educatorReducer,
-    // student: studentReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
