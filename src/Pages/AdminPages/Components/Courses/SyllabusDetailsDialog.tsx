@@ -19,7 +19,7 @@ interface Props {
   error: string | null;
 }
 
-const SyllabusDetailsDialog: React.FC<Props> = ({
+export const SyllabusDetailsDialog: React.FC<Props> = ({
   open,
   onClose,
   syllabusSections,
@@ -58,5 +58,3 @@ const SyllabusDetailsDialog: React.FC<Props> = ({
     </Dialog>
   );
 };
-
-export default SyllabusDetailsDialog;

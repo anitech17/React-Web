@@ -9,13 +9,10 @@ import {
     deleteCourse,
     fetchSyllabusByCourseId,
 } from "../../features/admin/thunks";
-import CoursesTable from "./Components/Courses/CoursesTable";
-import CreateNewCourseDialog from "./Components/Courses/CreateNewCourseDialog";
-import EditCourseDialog from "./Components/Courses/EditCourseDialog";
-import SyllabusDetailsDialog from "./Components/Courses/SyllabusDetailsDialog";
 import { DeleteConfirmDialog } from "../../Components/WarningsDialog/DeleteConfirmDialog";
 import { Spinner } from "../../Components";
 import type { Course, CreateAndEditCoursePayload } from "./Components/types";
+import { CoursesTable, CreateNewCourseDialog, EditCourseDialog, SyllabusDetailsDialog } from "./Components";
 
 export const AdminCourses = () => {
     const dispatch = useAppDispatch();
@@ -151,7 +148,7 @@ export const AdminCourses = () => {
 
     return (
         <Box width="100%" p={3}>
-            {loading && <Spinner />}
+            {(loading || syllabusLoading) && <Spinner />}
             <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                 <Typography variant="h5">Admin Courses</Typography>
                 <Button variant="contained" color="primary" onClick={() => setOpenDialog(true)}>

@@ -21,7 +21,7 @@ interface Props {
   initialData?: CreateAndEditCoursePayload;
 }
 
-const CreateNewCourseDialog: React.FC<Props> = ({
+export const CreateNewCourseDialog: React.FC<Props> = ({
   open,
   onClose,
   onSubmit,
@@ -166,5 +166,3 @@ const CreateNewCourseDialog: React.FC<Props> = ({
     </Dialog>
   );
 };
-
-export default CreateNewCourseDialog;

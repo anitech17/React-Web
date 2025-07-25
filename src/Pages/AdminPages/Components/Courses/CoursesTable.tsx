@@ -36,7 +36,7 @@ interface CoursesTableProps {
   total: number;
 }
 
-const CoursesTable: React.FC<CoursesTableProps> = ({
+export const CoursesTable: React.FC<CoursesTableProps> = ({
   courses,
   onEdit,
   onDelete,
@@ -145,5 +145,3 @@ const CoursesTable: React.FC<CoursesTableProps> = ({
     </Box>
   );
 };
-
-export default CoursesTable;

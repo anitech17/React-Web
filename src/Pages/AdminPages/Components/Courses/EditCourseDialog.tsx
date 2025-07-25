@@ -1,6 +1,6 @@
 // Components/Courses/EditCourseDialog.tsx
-import CreateNewCourseDialog from "./CreateNewCourseDialog";
 import type { CreateAndEditCoursePayload } from "../../../../Pages/AdminPages/Components/types";
+import { CreateNewCourseDialog } from "./CreateNewCourseDialog";
 
 interface Props {
   open: boolean;
@@ -9,7 +9,7 @@ interface Props {
   courseData: CreateAndEditCoursePayload;
 }
 
-const EditCourseDialog: React.FC<Props> = ({ open, onClose, onSubmit, courseData }) => {
+export const EditCourseDialog: React.FC<Props> = ({ open, onClose, onSubmit, courseData }) => {
   console.log("courseData", courseData);
   return (
     <CreateNewCourseDialog
@@ -20,5 +20,3 @@ const EditCourseDialog: React.FC<Props> = ({ open, onClose, onSubmit, courseData
     />
   );
 };
-
-export default EditCourseDialog;
