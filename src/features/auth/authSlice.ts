@@ -29,6 +29,9 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
+      state.loading = false;
+      state.error = null;
+
       localStorage.removeItem('user');
       localStorage.removeItem('token');
     },
@@ -53,10 +56,13 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Login failed';
+        state.error =
+          (action.payload as string) ||
+          action.error.message ||
+          'Login failed';
       })
 
-      // Auto-login (getCurrentUser)
+      // Auto-login
       .addCase(getCurrentUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -77,7 +83,10 @@ const authSlice = createSlice({
         state.user = null;
         state.token = null;
         state.isAuthenticated = false;
-        state.error = action.payload as string;
+        state.error =
+          (action.payload as string) ||
+          action.error.message ||
+          'Auto login failed';
 
         localStorage.removeItem('user');
         localStorage.removeItem('token');

@@ -1,3 +1,4 @@
+// authThunk.ts
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from '../../Services/axiosConfig';
 
@@ -17,6 +18,9 @@ export const getCurrentUser = createAsyncThunk(
       const response = await axios.get('/auth/user');
       return response.data; // { user, token, message }
     } catch (error: any) {
+      if (error.response?.status === 401) {
+        return rejectWithValue('Token expired'); // Explicit error for expired token
+      }
       return rejectWithValue(error.response?.data?.message || 'Auto login failed');
     }
   }
