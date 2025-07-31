@@ -1,12 +1,12 @@
 // src/features/admin/index.ts
 import { combineReducers } from "@reduxjs/toolkit";
 import studentDataReducer from "./studentSlice";
-// import classesReducer from "./classes/classesSlice";
+import studentClassesReducer from "./studentClassesSlice";
 // import reportsReducer from "./reports/reportsSlice";
 
 const studentReducer = combineReducers({
   studentDashboard: studentDataReducer,
-  // classes: classesReducer,
+  studentClasses: studentClassesReducer,
   // reports: reportsReducer,
 });
 
