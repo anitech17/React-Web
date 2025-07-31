@@ -75,3 +75,20 @@ export interface StudentDashboardData {
   nextTest: ScheduledTest | null;
   lastTestPerformance: LastTestPerformance | null;
 }
+
+export interface ScheduledClass {
+  id: string;
+  scheduled_at: string;
+  join_url: string;
+  status: string;
+  discussion_topics: string;
+  course: CourseInfo;
+  syllabusSections: SyllabusSection[];
+  educator: EducatorInfo;
+}
+
+export interface StudentClassesResponse {
+  scheduled: ScheduledClass[];
+  completed: ScheduledClass[];
+  requested: ScheduledClass[];
+}

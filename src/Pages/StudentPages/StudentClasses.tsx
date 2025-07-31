@@ -1,22 +1,40 @@
 // --- pages/index.tsx ---
-import { Box, Button, Typography } from "@mui/material";
-import { useState } from "react";
-import { CommentDialog, CompletedClasses, RequestClassDialog, ScheduledClasses } from "./Components";
+import {
+  Box,
+  Button,
+  Typography,
+  Divider,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import type { AppDispatch, RootState } from "../../app/store";
+import {
+  CommentDialog,
+  CompletedClasses,
+  ScheduledClasses,
+  RequestedClasses,
+  RequestClassDialog,
+} from "./Components";
+import { fetchStudentClasses } from "../../features/student/thunks";
+import { Spinner } from "../../Components";
 
 export const StudentClasses = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { user } = useSelector((state: RootState) => state.auth);
+  const { data, loading, error } = useSelector(
+    (state: RootState) => state.student.studentClasses
+  );
+
   const [openRequestDialog, setOpenRequestDialog] = useState(false);
   const [openCommentDialog, setOpenCommentDialog] = useState(false);
   const [selectedClassId, setSelectedClassId] = useState(null);
   const [comment, setComment] = useState("");
 
-  const scheduledClasses = [
-    { id: 1, time: "10:00 AM", educator: "Mr. Smith", subject: "Math" },
-    { id: 2, time: "12:00 PM", educator: "Ms. Johnson", subject: "English" },
-  ];
-
-  const completedClasses = [
-    { id: 3, time: "9:00 AM", educator: "Dr. Green", subject: "Science" },
-  ];
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(fetchStudentClasses(user.id));
+    }
+  }, [dispatch, user?.id]);
 
   const handleCommentClick = (id: any) => {
     setSelectedClassId(id);
@@ -27,6 +45,11 @@ export const StudentClasses = () => {
     console.log("Comment submitted:", comment, "for class ID:", selectedClassId);
     setOpenCommentDialog(false);
     setComment("");
+  };
+
+  const handleCancelRequest = (classId: string) => {
+    console.log("Cancel request for class ID:", classId);
+    // You will later dispatch cancelRequestThunk(classId) here
   };
 
   return (
@@ -40,8 +63,21 @@ export const StudentClasses = () => {
         </Button>
       </Box>
 
-      <ScheduledClasses scheduledClasses={scheduledClasses} />
-      <CompletedClasses completedClasses={completedClasses} onCommentClick={handleCommentClick} />
+      {loading && <Spinner />}
+      {error && <Typography color="error">{error}</Typography>}
+
+      {data && (
+        <>
+          <ScheduledClasses scheduledClasses={data.scheduled} />
+          <Divider sx={{ my: 3 }} />
+          <CompletedClasses completedClasses={data.completed} onCommentClick={handleCommentClick} />
+          <Divider sx={{ my: 3 }} />
+          <RequestedClasses
+            requestedClasses={data.requested}
+            onCancelRequest={handleCancelRequest}
+          />
+        </>
+      )}
 
       <RequestClassDialog open={openRequestDialog} onClose={() => setOpenRequestDialog(false)} />
       <CommentDialog
