@@ -17,10 +17,9 @@ import {
   TablePagination,
 } from "@mui/material";
 import { Visibility, Edit, Delete } from "@mui/icons-material";
+import { useState, useCallback, memo } from "react";
 import type { Course } from "../../../../Pages/AdminPages/Components/types";
-import { useState } from "react";
 import type { SelectChangeEvent } from "@mui/material";
-
 
 interface CoursesTableProps {
   courses: Course[];
@@ -36,7 +35,7 @@ interface CoursesTableProps {
   total: number;
 }
 
-export const CoursesTable: React.FC<CoursesTableProps> = ({
+const CoursesTableComponent = ({
   courses,
   onEdit,
   onDelete,
@@ -48,21 +47,31 @@ export const CoursesTable: React.FC<CoursesTableProps> = ({
   page,
   limit,
   total,
-}) => {
+}: CoursesTableProps) => {
   const [searchInput, setSearchInput] = useState("");
   const [classFilter, setClassFilter] = useState("");
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchInput(value);
     onSearchChange(value);
-  };
+  }, [onSearchChange]);
 
-  const handleClassChange = (e: SelectChangeEvent) => {
+  const handleClassChange = useCallback((e: SelectChangeEvent) => {
     const value = e.target.value;
     setClassFilter(value);
     onClassFilterChange(value);
-  };
+  }, [onClassFilterChange]);
+
+  const handlePageChange = useCallback((_: unknown, newPage: number) => {
+    onPageChange(newPage);
+  }, [onPageChange]);
+
+  const handleLimitChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const newLimit = parseInt(e.target.value, 10);
+    onLimitChange(newLimit);
+    onPageChange(0); // reset to first page on limit change
+  }, [onLimitChange, onPageChange]);
 
   return (
     <Box>
@@ -83,11 +92,9 @@ export const CoursesTable: React.FC<CoursesTableProps> = ({
             label="Filter by Class"
           >
             <MenuItem value="">All Classes</MenuItem>
-            <MenuItem value="1">Class 1</MenuItem>
-            <MenuItem value="2">Class 2</MenuItem>
-            <MenuItem value="3">Class 3</MenuItem>
-            <MenuItem value="4">Class 4</MenuItem>
-            <MenuItem value="10">Class 10</MenuItem>
+            {[1, 2, 3, 4, 10].map((c) => (
+              <MenuItem key={c} value={String(c)}>Class {c}</MenuItem>
+            ))}
           </Select>
         </FormControl>
       </Box>
@@ -136,12 +143,15 @@ export const CoursesTable: React.FC<CoursesTableProps> = ({
           component="div"
           count={total}
           page={page}
-          onPageChange={(_, newPage) => onPageChange(newPage)}
+          onPageChange={handlePageChange}
           rowsPerPage={limit}
-          onRowsPerPageChange={(e) => onLimitChange(parseInt(e.target.value, 10))}
+          onRowsPerPageChange={handleLimitChange}
           rowsPerPageOptions={[5, 10, 20, 50]}
         />
       </TableContainer>
     </Box>
   );
 };
+
+export const CoursesTable = memo(CoursesTableComponent);
+

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { useAppDispatch, useAppSelector } from "../../hooks/useTypedHooks";
@@ -7,16 +7,17 @@ import { UserDialog, UsersTable } from "./Components";
 import type { User } from "./Components/types";
 import { Spinner } from "../../Components";
 import { DeleteConfirmDialog } from "../../Components/WarningsDialog/DeleteConfirmDialog";
-import { useSnackbar } from "notistack"; // 👈 import hook
+import { useSnackbar } from "notistack";
 
 export const AdminUsers = () => {
   const dispatch = useAppDispatch();
-  const { enqueueSnackbar } = useSnackbar(); // 👈 get the enqueueSnackbar function
+  const { enqueueSnackbar } = useSnackbar();
 
   const { users, total, page, limit, loading } = useAppSelector(
     (state) => state.admin.users
   );
 
+  // --- STATE ---
   const [openDialog, setOpenDialog] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
@@ -26,7 +27,7 @@ export const AdminUsers = () => {
   const [limitParam, setLimitParam] = useState(limit);
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
-  
+
   const [form, setForm] = useState<Omit<User, "id" | "created_at">>({
     name: "",
     email: "",
@@ -35,25 +36,35 @@ export const AdminUsers = () => {
     role: "student",
   });
 
-  useEffect(() => {
-    dispatch(fetchUsers({ search, role: roleFilter, page: pageParam, limit: limitParam }));
-  }, [dispatch, search, roleFilter, pageParam, limitParam]);
+  // useMemo to prevent recreating fetchParams object
+  const fetchParams = useMemo(() => ({
+    search,
+    role: roleFilter,
+    page: pageParam,
+    limit: limitParam,
+  }), [search, roleFilter, pageParam, limitParam]);
 
-  const handleOpenCreate = () => {
+  useEffect(() => {
+    dispatch(fetchUsers(fetchParams));
+  }, [dispatch, fetchParams]);
+
+  // useCallback: to memoize stable handler function references
+  const handleOpenCreate = useCallback(() => {
     setEditingUser(null);
     setForm({ name: "", email: "", phone: "", dob: "", role: "student" });
     setOpenDialog(true);
-  };
+  }, []);
 
-  const handleSaveUser = () => {
+  const handleSaveUser = useCallback(() => {
     if (editingUser) {
       const { role, ...dataWithoutRole } = form;
+
       dispatch(editUser({ id: editingUser.id, data: dataWithoutRole }))
         .unwrap()
         .then(() => {
           enqueueSnackbar("User updated successfully", { variant: "success" });
           setOpenDialog(false);
-          dispatch(fetchUsers({ search, role: roleFilter, page: pageParam, limit: limitParam }));
+          dispatch(fetchUsers(fetchParams));
         })
         .catch((err) => {
           enqueueSnackbar(err || "Failed to update user", { variant: "error" });
@@ -64,15 +75,15 @@ export const AdminUsers = () => {
         .then(() => {
           enqueueSnackbar("User created successfully", { variant: "success" });
           setOpenDialog(false);
-          dispatch(fetchUsers({ search, role: roleFilter, page: pageParam, limit: limitParam }));
+          dispatch(fetchUsers(fetchParams));
         })
         .catch((err) => {
           enqueueSnackbar(err || "Failed to create user", { variant: "error" });
         });
     }
-  };
+  }, [editingUser, form, dispatch, enqueueSnackbar, fetchParams]);
 
-  const handleEdit = (user: User) => {
+  const handleEdit = useCallback((user: User) => {
     setEditingUser(user);
     setForm({
       name: user.name,
@@ -82,24 +93,24 @@ export const AdminUsers = () => {
       role: user.role,
     });
     setOpenDialog(true);
-  };
+  }, []);
 
-  const handleDelete = (id: string) => {
+  const handleDelete = useCallback((id: string) => {
     const user = users.find((u) => u.id === id);
     if (user) {
       setUserToDelete(user);
       setDeleteDialogOpen(true);
     }
-  };
+  }, [users]);
 
-  const confirmDelete = () => {
+  const confirmDelete = useCallback(() => {
     if (!userToDelete) return;
 
     dispatch(deleteUser(userToDelete.id))
       .unwrap()
       .then(() => {
         enqueueSnackbar("User deleted successfully", { variant: "success" });
-        dispatch(fetchUsers({ search, role: roleFilter, page: pageParam, limit: limitParam }));
+        dispatch(fetchUsers(fetchParams));
       })
       .catch((err) => {
         enqueueSnackbar(err || "Failed to delete user", { variant: "error" });
@@ -108,11 +119,19 @@ export const AdminUsers = () => {
         setDeleteDialogOpen(false);
         setUserToDelete(null);
       });
-  };
+  }, [userToDelete, dispatch, enqueueSnackbar, fetchParams]);
+
+  // useMemo to avoid recreating the confirmation message string
+  const deleteConfirmMessage = useMemo(() => {
+    return userToDelete
+      ? `Are you sure you want to delete ${userToDelete.name} (${userToDelete.role})?`
+      : "";
+  }, [userToDelete]);
 
   return (
     <Box width="100%" p={3}>
       {loading && <Spinner />}
+
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h5">Admin Users</Typography>
         <Button variant="contained" color="primary" onClick={handleOpenCreate}>
@@ -147,7 +166,7 @@ export const AdminUsers = () => {
 
       <DeleteConfirmDialog
         open={deleteDialogOpen}
-        message={`Are you sure you want to delete ${userToDelete?.name} (${userToDelete?.role})?`}
+        message={deleteConfirmMessage}
         onCancel={() => {
           setDeleteDialogOpen(false);
           setUserToDelete(null);

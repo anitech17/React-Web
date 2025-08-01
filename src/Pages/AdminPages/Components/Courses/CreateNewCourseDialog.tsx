@@ -8,7 +8,7 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, memo } from "react";
 import type {
   CreateAndEditCoursePayload,
   SyllabusSectionInput,
@@ -21,99 +21,85 @@ interface Props {
   initialData?: CreateAndEditCoursePayload;
 }
 
-export const CreateNewCourseDialog: React.FC<Props> = ({
+const CreateNewCourseDialogComponent = ({
   open,
   onClose,
   onSubmit,
   initialData,
-}) => {
-  const [form, setForm] = useState<CreateAndEditCoursePayload>(
-    initialData || {
-      title: "",
-      subject: "",
-      description: "",
-      class: "",
-      syllabusSections: [],
-    }
-  );
-
-  console.log("initialData", initialData);
-
-
-  const addSyllabusSection = () => {
-    const newSection: SyllabusSectionInput = {
-      title: "",
-      description: "",
-      order: form.syllabusSections.length + 1,
-    };
-
-    setForm((prev) => ({
-      ...prev,
-      syllabusSections: [...prev.syllabusSections, newSection],
-    }));
+}: Props) => {
+  const defaultForm: CreateAndEditCoursePayload = {
+    title: "",
+    subject: "",
+    description: "",
+    class: "",
+    syllabusSections: [],
   };
 
-  const updateSection = (
-    index: number,
-    key: keyof SyllabusSectionInput,
-    value: string | number
-  ) => {
-    const updated = [...form.syllabusSections];
-    updated[index] = { ...updated[index], [key]: value };
-    setForm({ ...form, syllabusSections: updated });
-  };
-
-  const handleSubmit = () => {
-    onSubmit(form);
-    onClose();
-    if (!initialData) {
-      setForm({
-        title: "",
-        subject: "",
-        description: "",
-        class: "",
-        syllabusSections: [],
-      });
-    }
-  };
+  const [form, setForm] = useState<CreateAndEditCoursePayload>(initialData || defaultForm);
 
   useEffect(() => {
     if (open) {
-      setForm(
-        initialData || {
-          title: "",
-          subject: "",
-          description: "",
-          class: "",
-          syllabusSections: [],
-        }
-      );
+      setForm(initialData || defaultForm);
     }
   }, [open, initialData]);
 
+  const handleInputChange = useCallback((key: keyof CreateAndEditCoursePayload, value: string) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  }, []);
+
+  const addSyllabusSection = useCallback(() => {
+    setForm((prev) => ({
+      ...prev,
+      syllabusSections: [
+        ...prev.syllabusSections,
+        { title: "", description: "", order: prev.syllabusSections.length + 1 },
+      ],
+    }));
+  }, []);
+
+  const updateSection = useCallback(
+    (index: number, key: keyof SyllabusSectionInput, value: string | number) => {
+      setForm((prev) => {
+        const updated = [...prev.syllabusSections];
+        updated[index] = { ...updated[index], [key]: value };
+        return { ...prev, syllabusSections: updated };
+      });
+    },
+    []
+  );
+
+  const handleSubmit = useCallback(() => {
+    onSubmit(form);
+    onClose();
+
+    if (!initialData) {
+      setForm(defaultForm);
+    }
+  }, [form, onSubmit, onClose, initialData]);
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>{initialData ? "Edit Course" : "Create New Course"}</DialogTitle>
+
       <DialogContent>
         <Box display="flex" flexDirection="column" gap={2}>
           <TextField
             label="Title"
             fullWidth
             value={form.title}
-            onChange={(e) => setForm({ ...form, title: e.target.value })}
+            onChange={(e) => handleInputChange("title", e.target.value)}
           />
           <TextField
             label="Subject"
             fullWidth
             value={form.subject}
-            onChange={(e) => setForm({ ...form, subject: e.target.value })}
+            onChange={(e) => handleInputChange("subject", e.target.value)}
           />
           <TextField
             label="Class"
             fullWidth
             value={form.class}
-            onChange={(e) => setForm({ ...form, class: e.target.value })}
+            onChange={(e) => handleInputChange("class", e.target.value)}
           />
           <TextField
             label="Description"
@@ -121,9 +107,7 @@ export const CreateNewCourseDialog: React.FC<Props> = ({
             multiline
             rows={3}
             value={form.description}
-            onChange={(e) =>
-              setForm({ ...form, description: e.target.value })
-            }
+            onChange={(e) => handleInputChange("description", e.target.value)}
           />
 
           <Typography variant="h6">Syllabus Sections</Typography>
@@ -132,24 +116,18 @@ export const CreateNewCourseDialog: React.FC<Props> = ({
               <TextField
                 label="Title"
                 value={section.title}
-                onChange={(e) =>
-                  updateSection(idx, "title", e.target.value)
-                }
+                onChange={(e) => updateSection(idx, "title", e.target.value)}
               />
               <TextField
                 label="Description"
                 value={section.description}
-                onChange={(e) =>
-                  updateSection(idx, "description", e.target.value)
-                }
+                onChange={(e) => updateSection(idx, "description", e.target.value)}
               />
               <TextField
                 type="number"
                 label="Order"
                 value={section.order}
-                onChange={(e) =>
-                  updateSection(idx, "order", +e.target.value)
-                }
+                onChange={(e) => updateSection(idx, "order", +e.target.value)}
               />
             </Box>
           ))}
@@ -157,6 +135,7 @@ export const CreateNewCourseDialog: React.FC<Props> = ({
           <Button onClick={addSyllabusSection}>+ Add Section</Button>
         </Box>
       </DialogContent>
+
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
         <Button onClick={handleSubmit} variant="contained">
@@ -166,3 +145,5 @@ export const CreateNewCourseDialog: React.FC<Props> = ({
     </Dialog>
   );
 };
+
+export const CreateNewCourseDialog = memo(CreateNewCourseDialogComponent)

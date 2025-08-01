@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import type { SyllabusSection } from "../../../../Pages/AdminPages/Components/types";
 
-interface Props {
+interface SyllabusDetailsDialogProps {
   open: boolean;
   onClose: () => void;
   syllabusSections: SyllabusSection[];
@@ -19,17 +19,17 @@ interface Props {
   error: string | null;
 }
 
-export const SyllabusDetailsDialog: React.FC<Props> = ({
+export const SyllabusDetailsDialog = ({
   open,
   onClose,
   syllabusSections,
   loading,
   error,
-}) => {
+}: SyllabusDetailsDialogProps) => {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>Syllabus Details</DialogTitle>
-      <DialogContent>
+      <DialogContent dividers>
         {loading ? (
           <Box display="flex" justifyContent="center" py={4}>
             <CircularProgress />
@@ -41,11 +41,11 @@ export const SyllabusDetailsDialog: React.FC<Props> = ({
         ) : (
           <List>
             {syllabusSections.map((section) => (
-              <ListItem key={section.id} alignItems="flex-start">
+              <ListItem key={section.id} alignItems="flex-start" disableGutters>
                 <ListItemText
                   primary={
-                    <Typography variant="subtitle1">
-                      #{section.order}: {section.title}
+                    <Typography variant="subtitle1" fontWeight="bold">
+                      {`#${section.order}: ${section.title}`}
                     </Typography>
                   }
                   secondary={section.description}

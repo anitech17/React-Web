@@ -1,5 +1,3 @@
-// src/components/DeleteConfirmDialog.tsx
-import React from "react";
 import {
   Dialog,
   DialogActions,
@@ -8,6 +6,7 @@ import {
   DialogTitle,
   Button,
 } from "@mui/material";
+import { memo, useCallback } from "react";
 
 interface DeleteConfirmDialogProps {
   open: boolean;
@@ -16,26 +15,36 @@ interface DeleteConfirmDialogProps {
   onConfirm: () => void;
 }
 
-export const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
+const DeleteConfirmDialogComponent: React.FC<DeleteConfirmDialogProps> = ({
   open,
   message,
   onCancel,
   onConfirm,
 }) => {
+  const handleCancel = useCallback(() => {
+    onCancel();
+  }, [onCancel]);
+
+  const handleConfirm = useCallback(() => {
+    onConfirm();
+  }, [onConfirm]);
+
   return (
-    <Dialog open={open} onClose={onCancel}>
+    <Dialog open={open} onClose={handleCancel}>
       <DialogTitle>Confirm Delete</DialogTitle>
       <DialogContent>
         <DialogContentText>{message}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onCancel} color="primary">
+        <Button onClick={handleCancel} color="primary">
           Cancel
         </Button>
-        <Button onClick={onConfirm} color="error" variant="contained">
+        <Button onClick={handleConfirm} color="error" variant="contained">
           Delete
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
+
+export const DeleteConfirmDialog = memo(DeleteConfirmDialogComponent);
