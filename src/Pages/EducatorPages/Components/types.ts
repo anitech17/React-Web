@@ -49,3 +49,10 @@ export interface EducatorDashboardData {
   nextScheduledClass: ScheduledClass | null;
   nextTest: ScheduledTest | null;
 }
+
+// ✅ NEW TYPE for educator class list response
+export interface EducatorClassesResponse {
+  scheduled: ScheduledClass[];
+  completed: ScheduledClass[];
+  requested: ScheduledClass[];
+}
