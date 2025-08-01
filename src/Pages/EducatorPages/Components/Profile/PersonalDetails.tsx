@@ -1,4 +1,3 @@
-// --- components/PersonalDetails.tsx ---
 import {
   Paper,
   Box,
@@ -13,6 +12,7 @@ import MenuBookIcon from "@mui/icons-material/MenuBook";
 import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
 import PersonIcon from "@mui/icons-material/Person";
 import InfoIcon from "@mui/icons-material/Info";
+import React, { memo, useMemo } from "react";
 
 interface Props {
   data: {
@@ -24,17 +24,42 @@ interface Props {
   };
 }
 
-const DetailRow = ({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) => (
-  <Stack direction="row" alignItems="center" spacing={1}>
-    {icon}
-    <Typography variant="body2" fontWeight={600}>
-      {label}:
-    </Typography>
-    <Typography variant="body2">{value}</Typography>
-  </Stack>
+const DetailRow = React.memo(
+  ({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) => (
+    <Stack direction="row" alignItems="center" spacing={1}>
+      {icon}
+      <Typography variant="body2" fontWeight={600}>
+        {label}:
+      </Typography>
+      <Typography variant="body2">{value}</Typography>
+    </Stack>
+  )
 );
 
-export const PersonalDetails: React.FC<Props> = ({ data }) => {
+const PersonalDetailsComponent = ({ data }: Props) => {
+  // Memoized optional rows
+  const optionalRows = useMemo(() => {
+    const rows = [];
+
+    if (data.expertise && data.expertise.length > 0) {
+      rows.push(
+        <Grid key="expertise" size={{ xs: 12, md: 6, sm: 4 }} component="div">
+          <DetailRow icon={<MenuBookIcon />} label="Expertise" value={data.expertise} />
+        </Grid>
+      );
+    }
+
+    if (data.bio) {
+      rows.push(
+        <Grid key="bio" size={{ xs: 12 }} component="div">
+          <DetailRow icon={<InfoIcon />} label="Bio" value={data.bio} />
+        </Grid>
+      );
+    }
+
+    return rows;
+  }, [data.bio, data.expertise]);
+
   return (
     <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
       <Box display="flex" alignItems="center" mb={3}>
@@ -65,22 +90,10 @@ export const PersonalDetails: React.FC<Props> = ({ data }) => {
           <DetailRow icon={<PhoneAndroidIcon />} label="Phone" value={data.phone} />
         </Grid>
 
-        {data.expertise && data.expertise.length > 0 && (
-          <Grid size={{ xs: 12, md: 6, sm: 4 }} component="div">
-            <DetailRow
-              icon={<MenuBookIcon />}
-              label="Expertise"
-              value={data.expertise}
-            />
-          </Grid>
-        )}
-
-        {data.bio && (
-          <Grid size={{ xs: 12 }} component="div">
-            <DetailRow icon={<InfoIcon />} label="Bio" value={data.bio} />
-          </Grid>
-        )}
+        {optionalRows}
       </Grid>
     </Paper>
   );
 };
+
+export const PersonalDetails = memo(PersonalDetailsComponent);

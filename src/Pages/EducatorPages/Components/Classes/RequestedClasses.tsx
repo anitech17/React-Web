@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import type { ScheduledClass } from "../types";
 import dayjs from "dayjs";
+import { memo, useMemo } from "react";
 
 interface Props {
   requested: ScheduledClass[];
@@ -18,10 +19,29 @@ interface Props {
   onDecline: (classId: string) => void;
 }
 
-export const RequestedClasses = ({ requested, onAccept, onDecline }: Props) => {
+const RequestedClassesComponent = ({
+  requested,
+  onAccept,
+  onDecline,
+}: Props) => {
+  const formattedRequested = useMemo(
+    () =>
+      requested.map((cls) => ({
+        ...cls,
+        studentName: cls.student.user.name,
+        subject: cls.course.title,
+        formattedTime: dayjs(cls.scheduled_at).format("MMM D, YYYY h:mm A"),
+        discussion: cls.discussion_topics || "—",
+        status: cls.status.toLowerCase(),
+      })),
+    [requested]
+  );
+
   return (
     <Paper elevation={2} sx={{ p: 3, borderRadius: 3, mb: 4 }}>
-      <Typography variant="h6" mb={2}>Requested Classes</Typography>
+      <Typography variant="h6" mb={2}>
+        Requested Classes
+      </Typography>
 
       {requested.length === 0 ? (
         <Typography variant="body2" color="text.secondary">
@@ -40,14 +60,12 @@ export const RequestedClasses = ({ requested, onAccept, onDecline }: Props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {requested.map((cls) => (
+            {formattedRequested.map((cls) => (
               <TableRow key={cls.id}>
-                <TableCell>{cls.student.user.name}</TableCell>
-                <TableCell>{cls.course.title}</TableCell>
-                <TableCell>{cls.discussion_topics || "—"}</TableCell>
-                <TableCell>
-                  {dayjs(cls.scheduled_at).format("MMM D, YYYY h:mm A")}
-                </TableCell>
+                <TableCell>{cls.studentName}</TableCell>
+                <TableCell>{cls.subject}</TableCell>
+                <TableCell>{cls.discussion}</TableCell>
+                <TableCell>{cls.formattedTime}</TableCell>
                 <TableCell sx={{ textTransform: "capitalize" }}>
                   {cls.status}
                 </TableCell>
@@ -78,3 +96,5 @@ export const RequestedClasses = ({ requested, onAccept, onDecline }: Props) => {
     </Paper>
   );
 };
+
+export const RequestedClasses = memo(RequestedClassesComponent);

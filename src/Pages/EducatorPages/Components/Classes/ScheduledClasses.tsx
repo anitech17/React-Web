@@ -1,4 +1,3 @@
-// --- components/ScheduledClasses.tsx ---
 import {
   Paper,
   Typography,
@@ -9,6 +8,7 @@ import {
   TableBody,
   Button,
 } from "@mui/material";
+import { memo, useMemo } from "react";
 import type { ScheduledClass } from "../types";
 import dayjs from "dayjs";
 
@@ -16,7 +16,14 @@ interface Props {
   scheduled: ScheduledClass[];
 }
 
-export const ScheduledClasses = ({ scheduled }: Props) => {
+const ScheduledClassesComponent = ({ scheduled }: Props) => {
+  const formattedClasses = useMemo(() => {
+    return scheduled.map((cls) => ({
+      ...cls,
+      formattedTime: dayjs(cls.scheduled_at).format("MMM D, YYYY h:mm A"),
+    }));
+  }, [scheduled]);
+
   return (
     <Paper elevation={2} sx={{ p: 3, borderRadius: 3, mb: 4 }}>
       <Typography variant="h6" mb={2}>Scheduled Classes</Typography>
@@ -37,11 +44,9 @@ export const ScheduledClasses = ({ scheduled }: Props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {scheduled.map((cls) => (
+            {formattedClasses.map((cls) => (
               <TableRow key={cls.id}>
-                <TableCell>
-                  {dayjs(cls.scheduled_at).format("MMM D, YYYY h:mm A")}
-                </TableCell>
+                <TableCell>{cls.formattedTime}</TableCell>
                 <TableCell>{cls.course.title}</TableCell>
                 <TableCell>{cls.discussion_topics || "—"}</TableCell>
                 <TableCell sx={{ textTransform: "capitalize" }}>
@@ -66,3 +71,5 @@ export const ScheduledClasses = ({ scheduled }: Props) => {
     </Paper>
   );
 };
+
+export const ScheduledClasses = memo(ScheduledClassesComponent);

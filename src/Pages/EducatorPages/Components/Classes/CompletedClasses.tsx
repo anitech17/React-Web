@@ -9,16 +9,30 @@ import {
   TableBody,
 } from "@mui/material";
 import dayjs from "dayjs";
+import { memo, useMemo } from "react";
 import type { ScheduledClass } from "../types";
 
 interface Props {
   completed: ScheduledClass[];
 }
 
-export const CompletedClasses = ({ completed }: Props) => {
+const CompletedClassesComponent = ({ completed }: Props) => {
+  const formattedClasses = useMemo(
+    () =>
+      completed.map((cls) => ({
+        ...cls,
+        formattedTime: dayjs(cls.scheduled_at).format("MMM D, YYYY h:mm A"),
+        discussion: cls.discussion_topics || "—",
+        status: cls.status.toLowerCase(),
+      })),
+    [completed]
+  );
+
   return (
     <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
-      <Typography variant="h6" mb={2}>Completed Classes</Typography>
+      <Typography variant="h6" mb={2}>
+        Completed Classes
+      </Typography>
 
       {completed.length === 0 ? (
         <Typography variant="body2" color="text.secondary">
@@ -35,13 +49,11 @@ export const CompletedClasses = ({ completed }: Props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {completed.map((cls) => (
+            {formattedClasses.map((cls) => (
               <TableRow key={cls.id}>
-                <TableCell>
-                  {dayjs(cls.scheduled_at).format("MMM D, YYYY h:mm A")}
-                </TableCell>
+                <TableCell>{cls.formattedTime}</TableCell>
                 <TableCell>{cls.course.title}</TableCell>
-                <TableCell>{cls.discussion_topics || "—"}</TableCell>
+                <TableCell>{cls.discussion}</TableCell>
                 <TableCell sx={{ textTransform: "capitalize" }}>
                   {cls.status}
                 </TableCell>
@@ -53,3 +65,5 @@ export const CompletedClasses = ({ completed }: Props) => {
     </Paper>
   );
 };
+
+export const CompletedClasses = memo(CompletedClassesComponent);

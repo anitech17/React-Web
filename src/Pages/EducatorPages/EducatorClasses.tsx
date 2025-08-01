@@ -1,6 +1,6 @@
 // --- pages/index.tsx ---
 import { Box, Button, Divider, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../app/store";
 import {
@@ -26,6 +26,17 @@ export const EducatorClasses = () => {
     }
   }, [dispatch, user.id]);
 
+  // useCallback to avoid redefinition on each render
+  const handleAccept = useCallback((id: string) => {
+    console.log("Accept class:", id);
+    // TODO: dispatch(acceptClassThunk(id))
+  }, []);
+
+  const handleDecline = useCallback((id: string) => {
+    console.log("Decline class:", id);
+    // TODO: dispatch(declineClassThunk(id))
+  }, []);
+
   return (
     <Box width="100%" sx={{ p: 3 }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
@@ -45,8 +56,8 @@ export const EducatorClasses = () => {
           <Divider sx={{ my: 3 }} />
           <RequestedClasses
             requested={data.requested}
-            onAccept={(id) => console.log("Accept class:", id)}
-            onDecline={(id) => console.log("Decline class:", id)}
+            onAccept={handleAccept}
+            onDecline={handleDecline}
           />
         </>
       )}

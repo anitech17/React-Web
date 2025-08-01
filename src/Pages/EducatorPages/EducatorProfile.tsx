@@ -1,4 +1,3 @@
-// --- pages/index.tsx ---
 import {
   Box,
   Grid,
@@ -37,13 +36,12 @@ export const EducatorProfile = () => {
     if (user?.id) {
       dispatch(fetchEducatorDashboard(user.id));
     }
-  }, [dispatch, user]);
+  }, [dispatch, user?.id]);
 
   return (
     <Box width="100%" sx={{ p: 3 }}>
       {loading && <Spinner />}
 
-      {/* Header with Notifications */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h5" fontWeight={600}>
           Educator Dashboard
@@ -60,20 +58,15 @@ export const EducatorProfile = () => {
         <Typography>No educator data found.</Typography>
       ) : (
         <>
-          {/* Personal Info Section */}
           <PersonalDetails data={educatorData} />
           <Divider sx={{ my: 4 }} />
-
-          {/* Dashboard Components Grid */}
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, md: 6, sm: 4 }} component="div">
               <StudentManagement />
             </Grid>
-
             <Grid size={{ xs: 12, md: 6, sm: 4 }} component="div">
               <NextTestScheduled data={educatorData.nextTest} />
             </Grid>
-
             <Grid size={{ xs: 12, md: 6, sm: 4 }} component="div">
               <NextClassScheduled data={educatorData.nextScheduledClass} />
             </Grid>
