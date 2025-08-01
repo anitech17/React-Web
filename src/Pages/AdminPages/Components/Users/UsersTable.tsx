@@ -16,9 +16,10 @@ import {
 } from "@mui/material";
 import { Edit, Delete, Search as SearchIcon } from "@mui/icons-material";
 import dayjs from "dayjs";
-import { useState, useCallback, memo } from "react";
+import { useState, useCallback, memo, useEffect } from "react";
 import type { UsersTableProps } from "../types";
 import type { SelectChangeEvent } from "@mui/material";
+import { useDebounce } from "../../../../hooks";
 
 const UsersTableComponent = ({
   users,
@@ -34,6 +35,20 @@ const UsersTableComponent = ({
 }: UsersTableProps) => {
   const [roleFilter, setRoleFilter] = useState<string>("");
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const debouncedSearchInput = useDebounce(searchTerm, 700);
+
+  const handleSearchChange = useCallback(
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+      },
+      []
+    );
+  
+  useEffect(() => {
+      onSearchChange(debouncedSearchInput);
+  }, [debouncedSearchInput, onSearchChange]);
+  
 
   const handleRoleChange = useCallback(
     (event: SelectChangeEvent<string>) => {
@@ -42,15 +57,6 @@ const UsersTableComponent = ({
       onRoleFilterChange?.(value);
     },
     [onRoleFilterChange]
-  );
-
-  const handleSearchChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const value = event.target.value;
-      setSearchTerm(value);
-      onSearchChange?.(value);
-    },
-    [onSearchChange]
   );
 
   const handlePageChange = useCallback(

@@ -17,9 +17,10 @@ import {
   TablePagination,
 } from "@mui/material";
 import { Visibility, Edit, Delete } from "@mui/icons-material";
-import { useState, useCallback, memo } from "react";
+import { useState, useCallback, memo, useEffect } from "react";
 import type { Course } from "../../../../Pages/AdminPages/Components/types";
 import type { SelectChangeEvent } from "@mui/material";
+import { useDebounce } from "../../../../hooks";
 
 interface CoursesTableProps {
   courses: Course[];
@@ -49,13 +50,20 @@ const CoursesTableComponent = ({
   total,
 }: CoursesTableProps) => {
   const [searchInput, setSearchInput] = useState("");
+  const debouncedSearchInput = useDebounce(searchInput, 700);
   const [classFilter, setClassFilter] = useState("");
 
-  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchInput(value);
-    onSearchChange(value);
-  }, [onSearchChange]);
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setSearchInput(value);
+    },
+    []
+  );
+
+  useEffect(() => {
+    onSearchChange(debouncedSearchInput);
+  }, [debouncedSearchInput, onSearchChange]);
 
   const handleClassChange = useCallback((e: SelectChangeEvent) => {
     const value = e.target.value;
