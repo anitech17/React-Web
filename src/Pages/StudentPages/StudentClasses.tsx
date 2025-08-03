@@ -1,11 +1,10 @@
-// --- pages/index.tsx ---
 import {
   Box,
   Button,
   Typography,
   Divider,
 } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import type { AppDispatch, RootState } from "../../app/store";
 import {
@@ -27,7 +26,7 @@ export const StudentClasses = () => {
 
   const [openRequestDialog, setOpenRequestDialog] = useState(false);
   const [openCommentDialog, setOpenCommentDialog] = useState(false);
-  const [selectedClassId, setSelectedClassId] = useState(null);
+  const [selectedClassId, setSelectedClassId] = useState<string | null>(null);
   const [comment, setComment] = useState("");
 
   useEffect(() => {
@@ -36,21 +35,23 @@ export const StudentClasses = () => {
     }
   }, [dispatch, user?.id]);
 
-  const handleCommentClick = (id: any) => {
+  const handleCommentClick = useCallback((id: string) => {
     setSelectedClassId(id);
     setOpenCommentDialog(true);
-  };
+  }, []);
 
-  const handleSubmitComment = () => {
+  const handleSubmitComment = useCallback(() => {
+    if (!selectedClassId || !comment.trim()) return;
     console.log("Comment submitted:", comment, "for class ID:", selectedClassId);
+    // dispatch(submitClassComment({ id: selectedClassId, comment }))
     setOpenCommentDialog(false);
     setComment("");
-  };
+  }, [selectedClassId, comment]);
 
-  const handleCancelRequest = (classId: string) => {
+  const handleCancelRequest = useCallback((classId: string) => {
     console.log("Cancel request for class ID:", classId);
-    // You will later dispatch cancelRequestThunk(classId) here
-  };
+    // dispatch(cancelClassRequest(classId))
+  }, []);
 
   return (
     <Box width="100%" sx={{ p: 3 }}>
@@ -58,7 +59,11 @@ export const StudentClasses = () => {
         <Typography variant="h5" fontWeight={600}>
           My Classes
         </Typography>
-        <Button variant="contained" color="primary" onClick={() => setOpenRequestDialog(true)}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setOpenRequestDialog(true)}
+        >
           Request a Class
         </Button>
       </Box>
@@ -69,9 +74,16 @@ export const StudentClasses = () => {
       {data && (
         <>
           <ScheduledClasses scheduledClasses={data.scheduled} />
+
           <Divider sx={{ my: 3 }} />
-          <CompletedClasses completedClasses={data.completed} onCommentClick={handleCommentClick} />
+
+          <CompletedClasses
+            completedClasses={data.completed}
+            onCommentClick={handleCommentClick}
+          />
+
           <Divider sx={{ my: 3 }} />
+
           <RequestedClasses
             requestedClasses={data.requested}
             onCancelRequest={handleCancelRequest}
@@ -79,7 +91,11 @@ export const StudentClasses = () => {
         </>
       )}
 
-      <RequestClassDialog open={openRequestDialog} onClose={() => setOpenRequestDialog(false)} />
+      <RequestClassDialog
+        open={openRequestDialog}
+        onClose={() => setOpenRequestDialog(false)}
+      />
+
       <CommentDialog
         open={openCommentDialog}
         onClose={() => setOpenCommentDialog(false)}

@@ -1,4 +1,3 @@
-// --- components/CompletedClasses.tsx ---
 import {
   Paper,
   Typography,
@@ -10,6 +9,7 @@ import {
   Button,
 } from "@mui/material";
 import dayjs from "dayjs";
+import { memo } from "react";
 import type { ScheduledClass } from "../types";
 
 interface Props {
@@ -17,20 +17,21 @@ interface Props {
   onCommentClick: (id: string) => void;
 }
 
-export const CompletedClasses = ({
-  completedClasses,
-  onCommentClick,
-}: Props) => (
-  <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
-    <Typography variant="h6" mb={2}>
-      Completed Classes
-    </Typography>
+const CompletedClassesComponent = ({ completedClasses, onCommentClick }: Props) => {
+  if (!completedClasses || completedClasses.length === 0) {
+    return (
+      <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
+        <Typography variant="h6" mb={2}>Completed Classes</Typography>
+        <Typography variant="body2" color="text.secondary">
+          No classes completed yet.
+        </Typography>
+      </Paper>
+    );
+  }
 
-    {completedClasses.length === 0 ? (
-      <Typography variant="body2" color="text.secondary">
-        No classes completed yet.
-      </Typography>
-    ) : (
+  return (
+    <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
+      <Typography variant="h6" mb={2}>Completed Classes</Typography>
       <Table size="small">
         <TableHead>
           <TableRow>
@@ -44,11 +45,9 @@ export const CompletedClasses = ({
         <TableBody>
           {completedClasses.map((cls) => (
             <TableRow key={cls.id}>
-              <TableCell>
-                {dayjs(cls.scheduled_at).format("MMM D, YYYY h:mm A")}
-              </TableCell>
-              <TableCell>{cls.educator.user.name}</TableCell>
-              <TableCell>{cls.course.title}</TableCell>
+              <TableCell>{dayjs(cls.scheduled_at).format("MMM D, YYYY h:mm A")}</TableCell>
+              <TableCell>{cls.educator?.user?.name || "N/A"}</TableCell>
+              <TableCell>{cls.course?.title || "N/A"}</TableCell>
               <TableCell>{cls.discussion_topics || "—"}</TableCell>
               <TableCell>
                 <Button
@@ -63,6 +62,8 @@ export const CompletedClasses = ({
           ))}
         </TableBody>
       </Table>
-    )}
-  </Paper>
-);
+    </Paper>
+  );
+};
+
+export const CompletedClasses = memo(CompletedClassesComponent);

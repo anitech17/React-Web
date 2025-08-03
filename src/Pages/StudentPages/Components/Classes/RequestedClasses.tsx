@@ -1,4 +1,3 @@
-// --- components/RequestedClasses.tsx ---
 import {
   Paper,
   Typography,
@@ -10,6 +9,7 @@ import {
   Button,
 } from "@mui/material";
 import dayjs from "dayjs";
+import { memo } from "react";
 import type { ScheduledClass } from "../types";
 
 interface Props {
@@ -17,20 +17,21 @@ interface Props {
   onCancelRequest: (id: string) => void;
 }
 
-export const RequestedClasses = ({
-  requestedClasses,
-  onCancelRequest,
-}: Props) => (
-  <Paper elevation={2} sx={{ p: 3, borderRadius: 3, mb: 4 }}>
-    <Typography variant="h6" mb={2}>
-      Requested Classes
-    </Typography>
+const RequestedClassesComponent = ({ requestedClasses, onCancelRequest }: Props) => {
+  if (!requestedClasses || requestedClasses.length === 0) {
+    return (
+      <Paper elevation={2} sx={{ p: 3, borderRadius: 3, mb: 4 }}>
+        <Typography variant="h6" mb={2}>Requested Classes</Typography>
+        <Typography variant="body2" color="text.secondary">
+          No class requests pending.
+        </Typography>
+      </Paper>
+    );
+  }
 
-    {requestedClasses.length === 0 ? (
-      <Typography variant="body2" color="text.secondary">
-        No class requests pending.
-      </Typography>
-    ) : (
+  return (
+    <Paper elevation={2} sx={{ p: 3, borderRadius: 3, mb: 4 }}>
+      <Typography variant="h6" mb={2}>Requested Classes</Typography>
       <Table size="small">
         <TableHead>
           <TableRow>
@@ -44,11 +45,9 @@ export const RequestedClasses = ({
         <TableBody>
           {requestedClasses.map((cls) => (
             <TableRow key={cls.id}>
-              <TableCell>
-                {dayjs(cls.scheduled_at).format("MMM D, YYYY h:mm A")}
-              </TableCell>
-              <TableCell>{cls.educator.user.name}</TableCell>
-              <TableCell>{cls.course.title}</TableCell>
+              <TableCell>{dayjs(cls.scheduled_at).format("MMM D, YYYY h:mm A")}</TableCell>
+              <TableCell>{cls.educator?.user?.name || "N/A"}</TableCell>
+              <TableCell>{cls.course?.title || "N/A"}</TableCell>
               <TableCell>{cls.discussion_topics || "—"}</TableCell>
               <TableCell>
                 <Button
@@ -64,6 +63,8 @@ export const RequestedClasses = ({
           ))}
         </TableBody>
       </Table>
-    )}
-  </Paper>
-);
+    </Paper>
+  );
+};
+
+export const RequestedClasses = memo(RequestedClassesComponent);

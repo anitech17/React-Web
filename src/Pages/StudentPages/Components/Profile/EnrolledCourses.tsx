@@ -1,4 +1,3 @@
-// --- Components/EnrolledCourses.tsx ---
 import {
   Box,
   Card,
@@ -8,16 +7,22 @@ import {
   Stack,
 } from "@mui/material";
 import type { Enrollment } from "../types";
+import { memo, useMemo } from "react";
 
 interface Props {
   courses: Enrollment[];
 }
 
-export const EnrolledCourses: React.FC<Props> = ({ courses }) => {
+const EnrolledCoursesComponent = ({ courses }: Props) => {
   if (!courses || courses.length === 0) return null;
 
+  const formatDate = useMemo(
+    () => new Intl.DateTimeFormat("en-IN", { dateStyle: "medium" }),
+    []
+  );
+
   return (
-    <Box>
+    <Box mb={3}>
       <Typography variant="h6" gutterBottom fontWeight={600}>
         Enrolled Courses
       </Typography>
@@ -26,16 +31,23 @@ export const EnrolledCourses: React.FC<Props> = ({ courses }) => {
         {courses.map((course) => (
           <Card
             key={course.id}
-            sx={{ minWidth: 260, flexShrink: 0, boxShadow: 3 }}
+            sx={{
+              minWidth: 260,
+              flexShrink: 0,
+              boxShadow: 3,
+              borderRadius: 2,
+            }}
           >
             <CardContent>
               <Typography variant="subtitle1" fontWeight={600}>
                 {course.course.title}
               </Typography>
-              <Typography variant="body2" color="text.secondary" gutterBottom>
+
+              <Typography variant="body2" color="text.secondary">
                 Subject: {course.course.subject}
               </Typography>
-              <Typography variant="body2" mb={1}>
+
+              <Typography variant="body2" my={1}>
                 {course.course.description}
               </Typography>
 
@@ -49,8 +61,13 @@ export const EnrolledCourses: React.FC<Props> = ({ courses }) => {
                 />
               </Stack>
 
-              <Typography variant="caption" color="text.secondary" mt={2} display="block">
-                Enrolled On: {new Date(course.enrolled_on).toLocaleDateString()}
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                display="block"
+                mt={2}
+              >
+                Enrolled On: {formatDate.format(new Date(course.enrolled_on))}
               </Typography>
             </CardContent>
           </Card>
@@ -59,3 +76,5 @@ export const EnrolledCourses: React.FC<Props> = ({ courses }) => {
     </Box>
   );
 };
+
+export const EnrolledCourses = memo(EnrolledCoursesComponent);

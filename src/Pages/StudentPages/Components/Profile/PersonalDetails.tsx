@@ -12,24 +12,26 @@ import SchoolIcon from "@mui/icons-material/School";
 import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import ClassIcon from "@mui/icons-material/Class";
-
 import type { StudentDashboardData } from "../types";
+import { memo } from "react";
 
 interface Props {
   data: StudentDashboardData;
 }
 
-const DetailRow = ({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) => (
-  <Stack direction="row" alignItems="center" spacing={1}>
-    {icon}
-    <Typography variant="body2" fontWeight={600}>
-      {label}:
-    </Typography>
-    <Typography variant="body2">{value}</Typography>
-  </Stack>
+const DetailRow = memo(
+  ({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) => (
+    <Stack direction="row" alignItems="center" spacing={1}>
+      {icon}
+      <Typography variant="body2" fontWeight={600}>
+        {label}:
+      </Typography>
+      <Typography variant="body2">{value}</Typography>
+    </Stack>
+  )
 );
 
-export const PersonalDetails: React.FC<Props> = ({ data }) => {
+const PersonalDetailsComponent = ({ data }: Props) => {
   const { name, email, phone, parent_whatsapp } = data;
 
   return (
@@ -69,3 +71,5 @@ export const PersonalDetails: React.FC<Props> = ({ data }) => {
     </Paper>
   );
 };
+
+export const PersonalDetails = memo(PersonalDetailsComponent);
