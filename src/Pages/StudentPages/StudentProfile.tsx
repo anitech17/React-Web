@@ -34,7 +34,7 @@ export const StudentProfile = () => {
     error,
   } = useSelector((state: RootState) => state.student.studentDashboard);
 
-  const user = useSelector((state: RootState) => state.auth.user);
+  const user = useSelector((state: RootState) => state.auth?.user);
 
   useEffect(() => {
     if (user?.id) {
