@@ -2,6 +2,7 @@ export interface CourseInfo {
   id: string;
   title: string;
   subject?: string;
+  class?: string;
 }
 
 export interface SyllabusSection {
@@ -15,6 +16,8 @@ export interface StudentInfo {
     id: string;
     name: string;
     email: string;
+    phone?: string;
+    dob?: string;
   };
 }
 
@@ -50,9 +53,23 @@ export interface EducatorDashboardData {
   nextTest: ScheduledTest | null;
 }
 
-// ✅ NEW TYPE for educator class list response
 export interface EducatorClassesResponse {
   scheduled: ScheduledClass[];
   completed: ScheduledClass[];
   requested: ScheduledClass[];
+}
+
+export interface EducatorStudentEnrollment {
+  id: string;
+  student_id: string;
+  course_id: string;
+  progress: string;
+  percent_complete: number;
+  enrolled_on: string;
+  student: StudentInfo;
+  course: CourseInfo;
+}
+
+export interface EducatorStudentsResponse {
+  data: EducatorStudentEnrollment[];
 }
