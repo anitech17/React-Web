@@ -1,4 +1,3 @@
-// components/StudentDialog.tsx
 import {
   Dialog,
   DialogTitle,
@@ -11,20 +10,15 @@ import {
   Divider,
 } from "@mui/material";
 import { useState } from "react";
+import type { EducatorStudentEnrollment } from "../types";
 
-const dummyProgress = {
-  English: 75,
-  Math: 60,
-  Science: 85,
-  History: 70,
-};
+interface Props {
+  open: boolean;
+  onClose: () => void;
+  student: EducatorStudentEnrollment | null;
+}
 
-const previousReviews = [
-  { by: "Mr. Smith", comment: "Excellent in Science." },
-  { by: "Ms. Lee", comment: "Needs improvement in History." },
-];
-
-export const StudentDialog = ({ open, onClose, student }: any) => {
+export const StudentDialog = ({ open, onClose, student }: Props) => {
   const [review, setReview] = useState("");
 
   const handleSubmit = () => {
@@ -35,28 +29,47 @@ export const StudentDialog = ({ open, onClose, student }: any) => {
 
   if (!student) return null;
 
+  const {
+    student: { user },
+    course,
+    percent_complete,
+    enrolled_on,
+    progress,
+  } = student;
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>{student.name}'s Portfolio</DialogTitle>
+      <DialogTitle>{user.name}'s Portfolio</DialogTitle>
       <DialogContent>
-        <Typography variant="subtitle1" gutterBottom>Progress Report</Typography>
+        <Typography variant="subtitle1" gutterBottom>
+          Student Information
+        </Typography>
         <Box mb={2}>
-          {Object.entries(dummyProgress).map(([subject, value]) => (
-            <Typography key={subject}>{subject}: {value}%</Typography>
-          ))}
-        </Box>
-        <Divider sx={{ mb: 2 }} />
-
-        <Typography variant="subtitle1" gutterBottom>Previous Reviews</Typography>
-        <Box mb={2}>
-          {previousReviews.map((r, i) => (
-            <Typography key={i}>- {r.by}: {r.comment}</Typography>
-          ))}
+          <Typography><strong>Name:</strong> {user.name}</Typography>
+          <Typography><strong>Email:</strong> {user.email}</Typography>
+          <Typography><strong>Phone:</strong> {user.phone || "—"}</Typography>
+          <Typography><strong>DOB:</strong> {user.dob || "—"}</Typography>
         </Box>
 
         <Divider sx={{ mb: 2 }} />
 
-        <Typography variant="subtitle1" gutterBottom>Add Review</Typography>
+        <Typography variant="subtitle1" gutterBottom>
+          Course Information
+        </Typography>
+        <Box mb={2}>
+          <Typography><strong>Title:</strong> {course.title}</Typography>
+          <Typography><strong>Class:</strong> {course.class || "—"}</Typography>
+          <Typography><strong>Subject:</strong> {course.subject || "—"}</Typography>
+          <Typography><strong>Progress:</strong> {progress || "—"}</Typography>
+          <Typography><strong>Completion:</strong> {percent_complete}%</Typography>
+          <Typography><strong>Enrolled On:</strong> {new Date(enrolled_on).toLocaleDateString()}</Typography>
+        </Box>
+
+        <Divider sx={{ mb: 2 }} />
+
+        <Typography variant="subtitle1" gutterBottom>
+          Add Review
+        </Typography>
         <TextField
           fullWidth
           multiline
@@ -66,6 +79,7 @@ export const StudentDialog = ({ open, onClose, student }: any) => {
           onChange={(e) => setReview(e.target.value)}
         />
       </DialogContent>
+
       <DialogActions>
         <Button onClick={onClose}>Close</Button>
         <Button variant="contained" onClick={handleSubmit}>Submit</Button>
